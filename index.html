@@ -28,6 +28,10 @@ var SETTINGS = {
     'openmasterpiece',
     'bug-616472-extension',
     'jetpack-e10s',
+    'magic-ink',
+    'my-code-reviews',
+    'misc',
+    'hackasaurus-lib',
     'oop-jetpack-sdk-poc'
   ],
   extras: [
@@ -54,7 +58,12 @@ var SETTINGS = {
       pushed_at: 'Tue Apr 21 12:13:21 2009 -0700',
       description: 'Naive attempt at client-side CouchDB in the browser using DOMStorage.'
     }
-  ]
+  ],
+  extensions: {
+    'bugzilla-dashboard': {
+      blogpost_url: 'http://www.toolness.com/wp/2010/08/a-dashboard-for-bugs/'
+    }
+  }
 };
 
 function Repo(options) {
@@ -152,6 +161,10 @@ function main() {
   var done = function() {
     var repos = JSON.parse(window.sessionStorage[key])
       .concat(SETTINGS.extras);
+    repos.forEach(function(repo) {
+      if (repo.name in SETTINGS.extensions)
+        _.extend(repo, SETTINGS.extensions[repo.name]);
+    });
     showRepos(repos, SETTINGS.excludes);
   };
 
