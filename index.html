@@ -1,23 +1,73 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, user-scalable=no">
+<style>
+html {
+  font-family: Georgia, serif;
+}
+
+body {
+  margin: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: normal;
+}
+
+.project {
+  border-bottom: 1px solid #e0e0e0;
+  position: relative;
+  padding: 0 0.5em;
+}
+
+.project h2 {
+  margin-top: 0.5em;
+  margin-bottom: 0;
+}
+
+.project .resources {
+  position: absolute;
+  top: 0.5em;
+  right: 0;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.project .resources li {
+  display: inline;
+  margin-right: 0.5em;
+}
+
+.project .resources a {
+  color: gray;
+  text-decoration: none;
+}
+
+.project .resources a:hover {
+  color: black;
+  text-decoration: underline;
+}
+</style>
 <title>Atul's Prototype Dashboard</title>
 <div id="projects"></div>
 <script type="text/html" id="project-template">
-  <h2><%- name %></h2>
-  <small>Last updated <%- formatDate(pushed_at) %></small>
-  <ul>
-    <% if (homepage) { %>
-      <li><a href="<%- homepage %>">homepage</a></li>
-    <% } %>
-    <% if (html_url) { %>
-      <li><a href="<%- html_url %>">source code</a></li>
-    <% } %>
-    <% if (blogpost_url) { %>
-      <li><a href="<%- blogpost_url %>">blog post</a></li>
-    <% } %>
-  </ul>
-  <p><%- description %></p>
-
+  <div class="project">
+    <h2><%- name %></h2>
+    <small>Last updated <%- formatDate(pushed_at) %></small>
+    <ul class="resources">
+      <% if (homepage) { %>
+        <li><a href="<%- homepage %>">homepage</a></li>
+      <% } %>
+      <% if (html_url) { %>
+        <li><a href="<%- html_url %>">source code</a></li>
+      <% } %>
+      <% if (blogpost_url) { %>
+        <li><a href="<%- blogpost_url %>">blog post</a></li>
+      <% } %>
+    </ul>
+    <p><%- description %></p>
+  </div>
 </script>
 <script src="vendor/jquery-2.1.0.js"></script>
 <script src="vendor/underscore.js"></script>
