@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Atul's Prototype Dashboard</title>
+<div id="projects"></div>
+<script type="text/html" id="project-template">
+  <h2><%- name %></h2>
+  <ul>
+    <% if (homepage) { %>
+      <li><a href="<%- homepage %>">homepage</a></li>
+    <% } %>
+    <li><a href="<%- html_url %>">github</a></li>
+  </ul>
+  <p><%- description %></p>
+
+</script>
+<script src="vendor/jquery-2.1.0.js"></script>
+<script src="vendor/underscore.js"></script>
+<script>
+function parseLink(link) {
+  var result = {};
+  link.split(',').forEach(function(part) {
+    var match = part.match(/\<(.+)\>;\s*rel="(.+)"/);
+    if (match)
+      result[match[2]] = match[1];
+  });
+  return result;
+}
+
+function test_parseLink() {
+  var link = '<https://api.github.com/user/124687/repos?page=2>; ' +
+             'rel="next", <https://api.github.com/user/124687/' +
+             'repos?page=7>; rel="last"';
+  expect(parseLink(link)).to.eql({
+    next: 'https://api.github.com/user/124687/repos?page=2',
+    last: 'https://api.github.com/user/124687/repos?page=7'
+  });
+}
+
+function getRepos(username, cb, url, results) {
+  url = url || 'https://api.github.com/users/' + username + '/repos';
+  results = results || [];
+  $.get(url, function(repos, success, req) {
+    if (success != "success") return cb(req);
+    results = results.concat(repos.filter(function(r) { return !r.fork; }));
+    var links = parseLink(req.getResponseHeader('link'));
+    if ('next' in links)
+      return getRepos(username, cb, links.next, results);
+    cb(null, results);
+  });
+}
+
+function showRepos(repos) {
+  var template = _.template($('#project-template').text().trim());
+  repos.forEach(function(repo) {
+    $("#projects").append($(template(repo)));
+  });
+}
+
+function main() {
+  var username = 'toolness';
+  var key = username + '-repos';
+
+  if (key in window.sessionStorage)
+    showRepos(JSON.parse(window.sessionStorage[key]));
+  else
+    getRepos('toolness', function(err, repos) {
+      if (err) return console.error(err);
+      window.sessionStorage[key] = JSON.stringify(repos);
+      showRepos(repos);
+    });
+}
+
+if (location.search == '?test') {
+  document.write('<script src="vendor/expect.js"></' + 'script>');
+  $(function() {
+    console.log("Running tests...");
+    Object.keys(window).forEach(function(name) {
+      if (/^test_/.test(name)) window[name]();
+    });
+    console.log("All tests pass.");
+  });
+} else $(main);
+</script>
