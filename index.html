@@ -16,6 +16,16 @@
 <script src="vendor/jquery-2.1.0.js"></script>
 <script src="vendor/underscore.js"></script>
 <script>
+var SETTINGS = {
+  username: 'toolness',
+  excludes: [
+    'openmasterpiece',
+    'bug-616472-extension',
+    'jetpack-e10s',
+    'oop-jetpack-sdk-poc'
+  ]
+};
+
 function parseLink(link) {
   var result = {};
   link.split(',').forEach(function(part) {
@@ -49,24 +59,28 @@ function getRepos(username, cb, url, results) {
   });
 }
 
-function showRepos(repos) {
+function showRepos(repos, excludes) {
   var template = _.template($('#project-template').text().trim());
-  repos.forEach(function(repo) {
+  repos.filter(function(repo) {
+    return excludes.indexOf(repo.name) == -1;
+  }).forEach(function(repo) {
     $("#projects").append($(template(repo)));
   });
 }
 
 function main() {
-  var username = 'toolness';
-  var key = username + '-repos';
+  var key = SETTINGS.username + '-repos';
+  var done = function() {
+    showRepos(JSON.parse(window.sessionStorage[key]), SETTINGS.excludes);
+  };
 
   if (key in window.sessionStorage)
-    showRepos(JSON.parse(window.sessionStorage[key]));
+    done();
   else
-    getRepos('toolness', function(err, repos) {
+    getRepos(SETTINGS.username, function(err, repos) {
       if (err) return console.error(err);
       window.sessionStorage[key] = JSON.stringify(repos);
-      showRepos(repos);
+      done();
     });
 }
 
