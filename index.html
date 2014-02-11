@@ -9,7 +9,12 @@
     <% if (homepage) { %>
       <li><a href="<%- homepage %>">homepage</a></li>
     <% } %>
-    <li><a href="<%- html_url %>">github</a></li>
+    <% if (html_url) { %>
+      <li><a href="<%- html_url %>">source code</a></li>
+    <% } %>
+    <% if (blogpost_url) { %>
+      <li><a href="<%- blogpost_url %>">blog post</a></li>
+    <% } %>
   </ul>
   <p><%- description %></p>
 
@@ -24,7 +29,42 @@ var SETTINGS = {
     'bug-616472-extension',
     'jetpack-e10s',
     'oop-jetpack-sdk-poc'
+  ],
+  extras: [
+    {
+      name: 'python-for-js-programmers',
+      html_url: 'http://hg.toolness.com/python-for-js-programmers/',
+      blogpost_url: 'http://www.toolness.com/wp/2008/06/python-for-javascript-programmers/',
+      homepage: 'http://hg.toolness.com/python-for-js-programmers/raw-file/20cd2cf47710/PythonForJsProgrammers.html',
+      pushed_at: 'Wed Jun 11 06:13:00 2008 -0700',
+      description: 'A Python tutorial for JavaScript programmers.'
+    },
+    {
+      name: '826-national-preso',
+      html_url: 'http://hg.toolness.com/826-national-preso/',
+      homepage: 'http://hg.toolness.com/826-national-preso/raw-file/a35b922da615/index.html',
+      pushed_at: 'Thu Jul 08 10:20:54 2010 -0700',
+      description: 'A presentation on what Mozilla can learn from 826 National.'
+    },
+    {
+      name: 'browser-couch',
+      html_url: 'http://hg.toolness.com/browser-couch/',
+      blogpost_url: 'http://www.toolness.com/wp/2009/04/couches-in-browsers/',
+      homepage: 'http://hg.toolness.com/browser-couch/raw-file/954b2b739d41/index.html',
+      pushed_at: 'Tue Apr 21 12:13:21 2009 -0700',
+      description: 'Naive attempt at client-side CouchDB in the browser using DOMStorage.'
+    }
   ]
+};
+
+function Repo(options) {
+  _.extend(this, options);
+}
+
+Repo.prototype = {
+  homepage: '',
+  html_url: '',
+  blogpost_url: ''
 };
 
 function parseLink(link) {
@@ -103,14 +143,16 @@ function showRepos(repos, excludes) {
   repos.filter(function(repo) {
     return excludes.indexOf(repo.name) == -1;
   }).forEach(function(repo) {
-    $("#projects").append($(template(repo)));
+    $("#projects").append($(template(new Repo(repo))));
   });
 }
 
 function main() {
   var key = SETTINGS.username + '-repos';
   var done = function() {
-    showRepos(JSON.parse(window.sessionStorage[key]), SETTINGS.excludes);
+    var repos = JSON.parse(window.sessionStorage[key])
+      .concat(SETTINGS.extras);
+    showRepos(repos, SETTINGS.excludes);
   };
 
   if (key in window.sessionStorage)
