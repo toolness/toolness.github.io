@@ -26,12 +26,17 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .project .resources {
-  position: absolute;
-  top: 0.5em;
-  right: 0;
   list-style-type: none;
   margin: 0;
   padding: 0;
+}
+
+@media (min-width: 640px) {
+  .project .resources {
+    position: absolute;
+    top: 0.5em;
+    right: 0;
+  }
 }
 
 .project .resources li {
