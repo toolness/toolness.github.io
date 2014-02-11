@@ -4,7 +4,7 @@
 <div id="projects"></div>
 <script type="text/html" id="project-template">
   <h2><%- name %></h2>
-  <small>Last updated <%- parseAndFormatDate(pushed_at) %></small>
+  <small>Last updated <%- formatDate(pushed_at) %></small>
   <ul>
     <% if (homepage) { %>
       <li><a href="<%- homepage %>">homepage</a></li>
@@ -235,6 +235,7 @@ var SETTINGS = {
 
 function Repo(options) {
   _.extend(this, options);
+  this.pushed_at = parseDate(this.pushed_at);
 }
 
 Repo.prototype = {
@@ -278,12 +279,11 @@ function parseMonthYearDate(date) {
     return new Date(parseInt(match[2]), monthIndex);
 }
 
-function parseAndFormatDate(date) {
+function formatDate(date) {
   var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June',
                 'July', 'August', 'September', 'October', 'November',
                 'December'];
 
-  date = parseDate(date);
   return MONTHS[date.getMonth()] + ' ' + date.getFullYear();
 }
 
@@ -316,12 +316,18 @@ function getRepos(username, cb, url, results) {
 
 function showRepos(repos, excludes, forks) {
   var template = _.template($('#project-template').text().trim());
-  repos.filter(function(repo) {
+
+  repos = repos.filter(function(repo) {
     return !repo.fork || (repo.fork && forks.indexOf(repo.name) != -1);
   }).filter(function(repo) {
     return excludes.indexOf(repo.name) == -1;
-  }).forEach(function(repo) {
-    $("#projects").append($(template(new Repo(repo))));
+  }).map(function(repo) {
+    return new Repo(repo);
+  });
+
+  repos = _.sortBy(repos, 'pushed_at').reverse();
+  repos.forEach(function(repo) {
+    $("#projects").append($(template(repo)));
   });
 }
 

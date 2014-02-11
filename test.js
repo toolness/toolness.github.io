@@ -21,8 +21,8 @@ function test_parseLink() {
   });
 }
 
-function test_parseAndFormatDate() {
-  expect(parseAndFormatDate("Aug 2010")).to.equal("August 2010");
+function test_formatDate() {
+  expect(formatDate(parseDate("Aug 2010"))).to.equal("August 2010");
 }
 
 function run_tests() {
