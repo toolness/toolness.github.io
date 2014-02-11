@@ -126,16 +126,6 @@ function main() {
 if (location.search == '?test') {
   document.write('<script src="vendor/expect.js"></' + 'script>');
   document.write('<script src="test.js"></' + 'script>');
-  $(function() {
-    $('body').text('Running tests...').css({backgroundColor: 'yellow'});
-    Object.keys(window).forEach(function(name) {
-      if (/^test_/.test(name)) {
-        $('body').append($('<div></div>').text(name));
-        window[name]();
-      }
-    });
-    $('body').css({backgroundColor: 'lightgreen'})
-      .append($('<h1></h1>').text('TESTS PASS'));
-  });
+  $(function() { run_tests(); });
 } else $(main);
 </script>

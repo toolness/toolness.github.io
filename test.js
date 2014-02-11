@@ -24,3 +24,15 @@ function test_parseLink() {
 function test_parseAndFormatDate() {
   expect(parseAndFormatDate("Aug 2010")).to.equal("August 2010");
 }
+
+function run_tests() {
+  $('body').text('Running tests...').css({backgroundColor: 'yellow'});
+  Object.keys(window).forEach(function(name) {
+    if (/^test_/.test(name)) {
+      $('body').append($('<div></div>').text(name));
+      window[name]();
+    }
+  });
+  $('body').css({backgroundColor: 'lightgreen'})
+    .append($('<h1></h1>').text('TESTS PASS'));
+}
