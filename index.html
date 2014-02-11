@@ -4,6 +4,7 @@
 <div id="projects"></div>
 <script type="text/html" id="project-template">
   <h2><%- name %></h2>
+  <small>Last updated <%- parseAndFormatDate(pushed_at) %></small>
   <ul>
     <% if (homepage) { %>
       <li><a href="<%- homepage %>">homepage</a></li>
@@ -36,6 +37,67 @@ function parseLink(link) {
   return result;
 }
 
+function parseISO8601Date(date) {
+  if (/Z$/.test(date))
+    return new Date(Date.parse(date));
+}
+
+function parseRFC2822Date(date) {
+  if (/^(Mon|Tue|Wed|Thu|Fri|Sat|Sun)/.test(date))
+    return new Date(Date.parse(date));
+}
+
+function parseMonthYearDate(date) {
+  var MONTH_YEAR_RE = /^([A-Za-z]+)\s+([0-9][0-9][0-9][0-9])$/;
+  var MONTHS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul',
+                'aug', 'sep', 'oct', 'nov'];
+
+  if (!MONTH_YEAR_RE.test(date)) return;
+
+  var match = date.match(MONTH_YEAR_RE);
+  var shortMonth = match[1].toLowerCase().slice(0, 3);
+  var monthIndex = MONTHS.indexOf(shortMonth);
+
+  if (monthIndex != -1)
+    return new Date(parseInt(match[2]), monthIndex);
+}
+
+function parseAndFormatDate(date) {
+  var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June',
+                'July', 'August', 'September', 'October', 'November',
+                'December'];
+
+  date = parseDate(date);
+  return MONTHS[date.getMonth()] + ' ' + date.getFullYear();
+}
+
+function parseDate(date) {
+  var parsers = [parseISO8601Date, parseRFC2822Date, parseMonthYearDate];
+  var result;
+
+  if (date instanceof Date) return date;
+
+  for (var i = 0; i < parsers.length; i++) {
+    result = parsers[i](date);
+    if (result) return result;
+  }
+
+  throw new Error("Cannot parse date: " + date);
+}
+
+function test_parseDate() {
+  var now = new Date();
+
+  expect(now).to.equal(now);
+  expect(parseDate("2011-01-26T19:06:43Z").getFullYear()).to.equal(2011);
+  expect(parseDate("August 2010").getFullYear()).to.equal(2010);
+  expect(parseDate("mar 2011").getMonth()).to.equal(2);
+  expect(parseDate("Wed Jun 11 06:13:00 2008 -0700").getFullYear())
+    .to.equal(2008);
+  expect(parseDate("Thu, 01 Jan 1970 00:00:00").getFullYear())
+    .to.equal(1970);
+}
+
 function test_parseLink() {
   var link = '<https://api.github.com/user/124687/repos?page=2>; ' +
              'rel="next", <https://api.github.com/user/124687/' +
@@ -44,6 +106,10 @@ function test_parseLink() {
     next: 'https://api.github.com/user/124687/repos?page=2',
     last: 'https://api.github.com/user/124687/repos?page=7'
   });
+}
+
+function test_parseAndFormatDate() {
+  expect(parseAndFormatDate("Aug 2010")).to.equal("August 2010");
 }
 
 function getRepos(username, cb, url, results) {
@@ -89,7 +155,10 @@ if (location.search == '?test') {
   $(function() {
     console.log("Running tests...");
     Object.keys(window).forEach(function(name) {
-      if (/^test_/.test(name)) window[name]();
+      if (/^test_/.test(name)) {
+        console.log(name);
+        window[name]();
+      }
     });
     console.log("All tests pass.");
   });
