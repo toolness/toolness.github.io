@@ -25,6 +25,13 @@ function test_formatDate() {
   expect(formatDate(parseDate("Aug 2010"))).to.equal("August 2010");
 }
 
+function test_getSourceCodeName() {
+  expect(getSourceCodeName('https://github.com/lol'))
+    .to.equal('github');
+  expect(getSourceCodeName('http://blah/source'))
+    .to.equal('source code');
+}
+
 function run_tests() {
   $('body').text('Running tests...').css({backgroundColor: 'yellow'});
   Object.keys(window).forEach(function(name) {

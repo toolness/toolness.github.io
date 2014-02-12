@@ -104,7 +104,8 @@ h1, h2, h3, h4, h5, h6 {
         <li><a href="<%- homepage %>">try it</a></li>
       <% } %>
       <% if (html_url) { %>
-        <li><a href="<%- html_url %>">source code</a></li>
+        <li><a href="<%- html_url %>">
+          <%- getSourceCodeName(html_url) %></a></li>
       <% } %>
       <% if (blogpost_url) { %>
         <li><a href="<%- blogpost_url %>">blog post</a></li>
@@ -127,6 +128,12 @@ Repo.prototype = {
   html_url: '',
   blogpost_url: ''
 };
+
+function getSourceCodeName(url) {
+  return /^https?:\/\/github\.com\//.test(url)
+         ? 'github'
+         : 'source code';
+}
 
 function parseLink(link) {
   var result = {};
