@@ -290,9 +290,8 @@ function showRepos(repos, excludes, forks) {
 
 function main() {
   var key = SETTINGS.username + '-repos';
-  var done = function() {
-    var repos = JSON.parse(window.sessionStorage[key])
-      .concat(SETTINGS.extras);
+  var done = function(repos) {
+    repos = repos.concat(SETTINGS.extras);
     repos.forEach(function(repo) {
       if (repo.name in SETTINGS.extensions)
         _.extend(repo, SETTINGS.extensions[repo.name]);
@@ -303,12 +302,16 @@ function main() {
   };
 
   if (key in window.sessionStorage)
-    done();
+    done(JSON.parse(window.sessionStorage[key]));
   else
     getRepos(SETTINGS.username, function(err, repos) {
       if (err) return console.error(err);
-      window.sessionStorage[key] = JSON.stringify(repos);
-      done();
+      try {
+        window.sessionStorage[key] = JSON.stringify(repos);
+      } catch (e) {
+        console.error('error caching repos', e);
+      }
+      done(repos);
     });
 }
 
