@@ -164,6 +164,13 @@ var SETTINGS = {
       html_url: 'https://github.com/toolness/hackasaurus-parable/tree/gh-pages/navigator-badge',
       pushed_at: 'January 2014',
       description: 'An interactive assessment of basic browsing skills.'
+    },
+    {
+      name: 'webxray2-spike',
+      homepage: 'http://labs.toolness.com/temp/xray2/',
+      blogpost_url: 'https://groups.google.com/d/msg/hackasaurus/N5MFMSnuBZI/N67txZYE1q8J',
+      pushed_at: 'April 2012',
+      description: 'An experimental fork of the Web X-Ray Goggles that offers a new remix UI and contextual menus.'
     }
   ],
   extensions: {
