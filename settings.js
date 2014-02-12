@@ -167,6 +167,7 @@ var SETTINGS = {
       name: 'navigator-badge-challenge',
       homepage: 'http://toolness.github.io/hackasaurus-parable/navigator-badge/',
       html_url: 'https://github.com/toolness/hackasaurus-parable/tree/gh-pages/navigator-badge',
+      created_at: 'Tue Sep 27 17:15:08 2011 -0700',
       pushed_at: 'January 2014',
       description: 'An interactive assessment of basic browsing skills.'
     },
