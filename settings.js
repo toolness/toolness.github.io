@@ -1,5 +1,6 @@
 var SETTINGS = {
   username: 'toolness',
+  // These are github repos that won't show in the dashboard.
   excludes: [
     'openmasterpiece',
     'bug-616472-extension',
@@ -10,10 +11,14 @@ var SETTINGS = {
     'hackasaurus-lib',
     'oop-jetpack-sdk-poc'
   ],
+  // By default, repos that are forks of other repos won't show on
+  // the dashboard. But these forks will.
   forks: [
     'collusion',
     'slowparse'
   ],
+  // These are extra projects that either aren't represented on github,
+  // or which are branches or subdirectories of existing github projects.
   extras: [
     {
       name: 'python-for-js-programmers',
@@ -173,6 +178,7 @@ var SETTINGS = {
       description: 'An experimental fork of the Web X-Ray Goggles that offers a new remix UI and contextual menus.'
     }
   ],
+  // This information is overlaid on top of existing github repos.
   extensions: {
     'memory-profiler': {
       blogpost_url: 'http://www.toolness.com/wp/2009/10/web-application-memory-profiling-take-two/'
