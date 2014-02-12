@@ -58,6 +58,10 @@ h1, h2, h3, h4, h5, h6 {
   padding: 0 0.5em;
 }
 
+.project small {
+  text-transform: lowercase;
+}
+
 .project h2 {
   margin-top: 0.5em;
   margin-bottom: 0;
@@ -98,7 +102,7 @@ h1, h2, h3, h4, h5, h6 {
 <script type="text/html" id="project-template">
   <div class="project">
     <h2><%- name %></h2>
-    <small>Last updated <%- formatDate(pushed_at) %></small>
+    <small><%- dateInfo() %></small>
     <ul class="resources">
       <% if (homepage) { %>
         <li><a href="<%- homepage %>">try it</a></li>
@@ -121,9 +125,19 @@ h1, h2, h3, h4, h5, h6 {
 function Repo(options) {
   _.extend(this, options);
   this.pushed_at = parseDate(this.pushed_at);
+  if (this.created_at)
+    this.created_at = parseDate(this.created_at);
 }
 
 Repo.prototype = {
+  dateInfo: function() {
+    var str = 'Last updated ' + formatDate(this.pushed_at);
+    if (this.created_at &&
+        this.created_at.getFullYear() != this.pushed_at.getFullYear())
+      str += ' \u00B7 created ' + this.created_at.getFullYear();
+    return str;
+  },
+  created_at: '',
   homepage: '',
   html_url: '',
   blogpost_url: ''
