@@ -157,6 +157,13 @@ var SETTINGS = {
       html_url: 'http://jsbin.com/utawEke/1/edit',
       pushed_at: 'November 2013',
       description: 'A simple webpage atop a spreadsheet making it easy for Hive members to find each other based on their areas of expertise.'
+    },
+    {
+      name: 'navigator-badge-challenge',
+      homepage: 'http://toolness.github.io/hackasaurus-parable/navigator-badge/',
+      html_url: 'https://github.com/toolness/hackasaurus-parable/tree/gh-pages/navigator-badge',
+      pushed_at: 'January 2014',
+      description: 'An interactive assessment of basic browsing skills.'
     }
   ],
   extensions: {
